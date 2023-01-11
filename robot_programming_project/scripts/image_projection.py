@@ -194,11 +194,9 @@ class image_projection:
             #author: Manigandan Sivalingam
             #x pixel should not go beyond 424, just updating inbetween ranges
             if depth_coords[0] > 424:
-                depth_coords[0] = 423
                 continue
             #x pixel should not go beyond 512, just updating inbetween ranges
             if depth_coords[1] > 512:
-                depth_coords[1] = 511
                 continue
 
             #inspired from workshop material
@@ -260,8 +258,8 @@ class image_projection:
                 cv2.circle(image_color, (int(image_coords[1]), int(image_coords[0])), 10, 255, -1)
                 cv2.circle(image_depth, (int(depth_coords[1]), int(depth_coords[0])), 5, 255, -1)
 
-        cv2.imshow("image depth", image_depth)
-        cv2.imshow("image color", image_color)
+        #cv2.imshow("image depth", image_depth)
+        #cv2.imshow("image color", image_color)
         cv2.waitKey(1)
 
         #capture image and publish to image saver node where all images are saved.  #author: Manigandan Sivalingam

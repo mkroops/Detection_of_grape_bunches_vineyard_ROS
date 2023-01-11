@@ -98,7 +98,8 @@ class run:
             #initiate and update memoru info    
             if self.current_state is robot_state.START:
                 print("START")
-                sleep(10)
+                #waiting for 5s for initialising
+                sleep(5)
                 print("Available Memory is:", self.update_mem_info)
                 self.current_state = robot_state.MOVE_TO_WAY_POINT
 
@@ -187,6 +188,7 @@ class run:
             #destroy all windows and exit
             elif self.current_state is robot_state.STOP:
                 cv2.destroyAllWindows()
+                print("Available Memory is:", self.update_mem_info)
                 exit()
     
 if __name__ == '__main__':

@@ -101,10 +101,18 @@ class grape_bunch_estimation:
             self.image_grape_bunch_count.append(len(grapes_coordinates[image]))
 
         #check duplicate count for different images
+        #compare image 1 and image 4
         self.duplicate_count_diff_image.append(int((self.remove_duplicates
             (grapes_coordinates, self.images[0], self.images[3], self.tolerence_level[1]))))
+        #compare image 2 and image 3
         self.duplicate_count_diff_image.append(int((self.remove_duplicates
             (grapes_coordinates, self.images[1], self.images[2], self.tolerence_level[1]))))
+        #compare image 1 and image 2
+        self.duplicate_count_diff_image.append(int((self.remove_duplicates
+            (grapes_coordinates, self.images[0], self.images[1], self.tolerence_level[1]))))
+        #compare image 3 and image 4
+        self.duplicate_count_diff_image.append(int((self.remove_duplicates
+            (grapes_coordinates, self.images[2], self.images[3], self.tolerence_level[1]))))
         
 
         self.image_1_4_grape_bunches = ((self.image_grape_bunch_count[0] + self.image_grape_bunch_count[3])
@@ -115,9 +123,10 @@ class grape_bunch_estimation:
         #estimate grape bunch by adding all images count and subracting duplicate count from all images
         self.overall_grape_bunches = ((self.image_1_4_grape_bunches + self.image_2_3_grape_bunches) - 
                                 ( self.duplicate_count_same_image[0] + self.duplicate_count_same_image[1] 
-                                + self.duplicate_count_same_image[2] + self.duplicate_count_same_image[3]))
+                                + self.duplicate_count_same_image[2] + self.duplicate_count_same_image[3])-
+                                (self.duplicate_count_diff_image[2] + self.duplicate_count_diff_image[3]))
 
-        #publicsh over all grape count to topic: grape_bunch_counter/get_grape_bunches_count
+        #publish over all grape count to topic: grape_bunch_counter/get_grape_bunches_count
         self.grape_bunches_count.publish(self.overall_grape_bunches)
 
     '''
@@ -133,6 +142,8 @@ class grape_bunch_estimation:
         
         print("Duplicate count Image 1 and 4 =", self.duplicate_count_diff_image[0])
         print("Duplicate count Image 2 and 3 =", self.duplicate_count_diff_image[1])
+        print("Duplicate count Image 1 and 2 =", self.duplicate_count_diff_image[2])
+        print("Duplicate count Image 3 and 4 =", self.duplicate_count_diff_image[3])
         print("Total Count Image 1 and 4 =", self.image_1_4_grape_bunches)
         print("Total Count Image 2 and 3 =", self.image_2_3_grape_bunches)
         print("Overall Grape Count =", self.overall_grape_bunches)

@@ -18,11 +18,11 @@
 	        <remap from="cmd_vel" to="nav_vel" />
 			<remap from="map" to="/map"/>
 
-	        <rosparam file="$(find uol_cmp9767m_tutorial)/config/costmap_common_params.yaml" command="load" ns="global_costmap"/>
-	        <rosparam file="$(find uol_cmp9767m_tutorial)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
-	        <rosparam file="$(find uol_cmp9767m_tutorial)/config/global_costmap_params.yaml" command="load"/>
-	        <rosparam file="$(find uol_cmp9767m_tutorial)/config/local_costmap_params.yaml" command="load"/>
-	        <rosparam file="$(find uol_cmp9767m_tutorial)/config/planners.yaml" command="load"/>
+	        <rosparam file="$(find robot_programming_project)/config/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+	        <rosparam file="$(find robot_programming_project)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+	        <rosparam file="$(find robot_programming_project)/config/global_costmap_params.yaml" command="load"/>
+	        <rosparam file="$(find robot_programming_project)/config/local_costmap_params.yaml" command="load"/>
+	        <rosparam file="$(find robot_programming_project)/config/planners.yaml" command="load"/>
 		</node> 
 	</group>
 
