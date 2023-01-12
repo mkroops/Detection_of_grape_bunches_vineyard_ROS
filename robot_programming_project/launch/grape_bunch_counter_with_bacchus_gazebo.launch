@@ -1,0 +1,21 @@
+<launch>
+  <!-- launch the bacchus gazebo vineyard demo and gui set to false -->
+  
+  <include file="$(find bacchus_gazebo)/launch/vineyard_demo.launch">
+  <arg name="world_name" value="vineyard_small"/>
+  <arg name="gui" value="false"/>
+  </include> 
+  
+  <!-- find robot_programming_project package and launch topological navigation -->
+  <include file="$(find robot_programming_project)/launch/topo_nav.launch" />
+  <!-- Nodes for counting grape bunches, author: Manigandan Sivalingam -->
+  <node name="proprioceptive_sensing" pkg="robot_programming_project" type="proprioceptive_sensing.py" output="screen"/>
+  <node name="grape_bunch_counter_topological_navigation_client" pkg="robot_programming_project" type="topological_navigation.py" output="screen"/>
+  <node name="main" pkg="robot_programming_project" type="main.py" output="screen"/>
+  <node name="grape_bunch_counter_image_projection" pkg="robot_programming_project" type="image_projection.py" output="screen"/>
+  <node name="image_saver" pkg="robot_programming_project" type="image_saver.py" output="screen"/>
+  <node name="move_robot" pkg="robot_programming_project" type="move_robot.py" output="screen"/>
+  <node name="grape_bunch_counter_estimation" pkg="robot_programming_project" type="grape_bunch_estimation.py" output="screen"/> 
+  <!-- record data in bag file -->
+  <node name="record" pkg="rosbag" type="record" args="-a -O $(find robot_programming_project)/bagfiles/grape_bunch_counter.bag"/>
+</launch>
