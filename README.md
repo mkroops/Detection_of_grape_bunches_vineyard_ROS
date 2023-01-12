@@ -24,7 +24,7 @@ How to execute
 - 2.Insert robot_programming_project in src folder
 
 - 3.update .bashrc file and source the package.
-cd ~
+- cd ~
 - vi .bashrc
 - source ~/catkin_ws/devel/setup.bash
 - catkin_make
