@@ -35,6 +35,7 @@ class image_projection:
     #count variable and save grape bunch coordinates
     grape_bunch_count = 0
     grape_bunch_coordinates = []
+    missing_coordinates_count = 0
     #set visualisation
     visualisation = True
     #count the no of images
@@ -171,95 +172,93 @@ class image_projection:
             a = cv2.contourArea(c)
             #inspired from https://stackoverflow.com/questions/44588279/find-and-draw-the-largest-contour-in-opencv-on-a-specific-color-python
             #trail and attempts made to play with contour area
-            if a > 20.0:
+            if a > 30.0:
                 cv2.drawContours(image_color, c, -1, (255, 0, 0), 3)
 
-            # calculate moments of the binary image
-            moments = cv2.moments(c)
-            
-            #no bunched is detected if moments is 0
-            if moments["m00"] == 0:
-                print('No grape bunches is detected.')
-                continue
-            
-            #take image coordinates of 2D image by using moments #inspired from workshop material
-            image_coords = (moments["m01"] / moments["m00"], moments["m10"] / moments["m00"])
-             #take depth coordinates of 2D image by using moments #inspired from workshop material
-            depth_coords = [image_depth.shape[0]/2 + (image_coords[0] - image_color.shape[0]/2)*self.color2depth_aspect, 
-                image_depth.shape[1]/2 + (image_coords[1] - image_color.shape[1]/2)*self.color2depth_aspect]
-            
-            #update the centres of grape bunches in list
-            centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
-            
-            #author: Manigandan Sivalingam
-            #x pixel should not go beyond 424, just updating inbetween ranges
-            if depth_coords[0] > 424:
-                continue
-            #x pixel should not go beyond 512, just updating inbetween ranges
-            if depth_coords[1] > 512:
-                continue
+                # calculate moments of the binary image
+                moments = cv2.moments(c)
+                
+                #no bunches is detected if moments is 0
+                if moments["m00"] == 0:
+                    print('No grape bunches is detected.')
+                    continue
+                
+                #take image coordinates of 2D image by using moments #inspired from workshop material
+                image_coords = (moments["m01"] / moments["m00"], moments["m10"] / moments["m00"])
+                #take depth coordinates of 2D image by using moments #inspired from workshop material
+                depth_coords = [image_depth.shape[0]/2 + (image_coords[0] - image_color.shape[0]/2)*self.color2depth_aspect, 
+                    image_depth.shape[1]/2 + (image_coords[1] - image_color.shape[1]/2)*self.color2depth_aspect]
+                
+                #update the centres of grape bunches in list
+                centres.append((int(moments['m10']/moments['m00']), int(moments['m01']/moments['m00'])))
+                
+                #author: Manigandan Sivalingam
+                #x pixel should not go beyond 424, just updating inbetween ranges
+                if depth_coords[0] > 424:
+                    continue
+                #x pixel should not go beyond 512, just updating inbetween ranges
+                if depth_coords[1] > 512:
+                    continue
 
-            #inspired from workshop material
-            depth_value = image_depth[int(depth_coords[0]), int(depth_coords[1])] # you might need to do some boundary checking first!
+                #inspired from workshop material
+                depth_value = image_depth[int(depth_coords[0]), int(depth_coords[1])] # you might need to do some boundary checking first!
 
-            #author: Manigandan Sivalingam
-            #nan values are spotted just trying fo next pixel to avoid nan values
-            next_pixel = [0,-1, -2, 1, 2] #add or subract by these values
-            if (numpy.isnan(depth_value)):
-                for x1 in next_pixel:
-                    for y1 in next_pixel: 
-                        #change untill nan values are removed
-                        new_depth_coords_x1 = int(depth_coords[0]) + x1
-                        new_depth_coords_y1 = int(depth_coords[1]) + y1
-                        depth_value = image_depth[int(new_depth_coords_x1), int(new_depth_coords_y1)]
-                        if numpy.isnan(depth_value):
-                            continue
-                        else:
-                            #update new depth coordinates
-                            depth_coords[0] = new_depth_coords_x1
-                            depth_coords[1] = new_depth_coords_y1
-                            break 
-            
-            #convert 2d coordinates to 3d coordinates, inspired from workshop material
-            camera_coords = self.camera_model.projectPixelTo3dRay((image_coords[1], image_coords[0])) 
-            camera_coords = [x/camera_coords[2] for x in camera_coords] 
-            camera_coords = [x*depth_value for x in camera_coords] 
+                #author: Manigandan Sivalingam
+                #nan values are spotted just trying fo next pixel to avoid nan values
+                next_pixel = [0,-1, -2, 1, 2] #add or subract by these values
+                if (numpy.isnan(depth_value)):
+                    for x1 in next_pixel:
+                        for y1 in next_pixel: 
+                            #change untill nan values are removed
+                            new_depth_coords_x1 = int(depth_coords[0]) + x1
+                            new_depth_coords_y1 = int(depth_coords[1]) + y1
+                            depth_value = image_depth[int(new_depth_coords_x1), int(new_depth_coords_y1)]
+                            if numpy.isnan(depth_value):
+                                continue
+                            else:
+                                #update new depth coordinates
+                                depth_coords[0] = new_depth_coords_x1
+                                depth_coords[1] = new_depth_coords_y1
+                                break 
+                
+                #convert 2d coordinates to 3d coordinates, inspired from workshop material
+                camera_coords = self.camera_model.projectPixelTo3dRay((image_coords[1], image_coords[0])) 
+                camera_coords = [x/camera_coords[2] for x in camera_coords] 
+                camera_coords = [x*depth_value for x in camera_coords] 
 
-            #update object location, inspired from workshop material
-            object_location = PoseStamped()
-            object_location.header.frame_id = "thorvald_001/kinect2_right_rgb_optical_frame"
-            object_location.pose.orientation.w = 1.0
-            object_location.pose.position.x = camera_coords[0]
-            object_location.pose.position.y = camera_coords[1]
-            object_location.pose.position.z = camera_coords[2]
+                #update object location, inspired from workshop material
+                object_location = PoseStamped()
+                object_location.header.frame_id = "thorvald_001/kinect2_right_rgb_optical_frame"
+                object_location.pose.orientation.w = 1.0
+                object_location.pose.position.x = camera_coords[0]
+                object_location.pose.position.y = camera_coords[1]
+                object_location.pose.position.z = camera_coords[2]
 
-            #publish grape bunch location, inspired from workshop material
-            self.object_location_pub.publish(object_location)
+                #publish grape bunch location, inspired from workshop material
+                self.object_location_pub.publish(object_location)
 
-            #transform x,y,z coordinates in map to spot where is grape bunch, inspired from workshop material
-            p_camera = self.tf_listener.transformPose('map', object_location)
+                #transform x,y,z coordinates in map to spot where is grape bunch, inspired from workshop material
+                p_camera = self.tf_listener.transformPose('map', object_location)
 
-            xyz = []
-            xyz.append(p_camera.pose.position.x)
-            xyz.append(p_camera.pose.position.y)
-            xyz.append(p_camera.pose.position.z)
-            #update grape bunches coordinates in map and append in list, inspired from workshop material
-            map_coordinate[self.grape_bunch_count] = xyz
-            eval = numpy.isnan(p_camera.pose.position.x)
-            
-            cv2.circle(image_color, centres[-1], 3, (0, 0, 0), -1)
-            cv2.circle(image_depth, centres[-1], 3, (0, 0, 0), -1)
-            #count the grape bunches  #author: Manigandan Sivalingam
-            self.grape_bunch_count = self.grape_bunch_count + 1
-            
-            color = (0, 0, 255)
-            #for visulaisation purpose
-            if self.visualisation:
-                cv2.circle(image_color, (int(image_coords[1]), int(image_coords[0])), 10, 255, -1)
-                cv2.circle(image_depth, (int(depth_coords[1]), int(depth_coords[0])), 5, 255, -1)
+                xyz = []
+                xyz.append(p_camera.pose.position.x)
+                xyz.append(p_camera.pose.position.y)
+                xyz.append(p_camera.pose.position.z)
+                #update grape bunches coordinates in map and append in list, inspired from workshop material
+                map_coordinate[self.grape_bunch_count] = xyz
+                eval = numpy.isnan(p_camera.pose.position.x)
+                #count the grape bunches  #author: Manigandan Sivalingam
+                if eval:
+                    self.missing_coordinates_count = self.missing_coordinates_count + 1
+                else: 
+                    self.grape_bunch_count = self.grape_bunch_count + 1
+                    #for visulaisation purpose
+                    if self.visualisation:
+                        cv2.circle(image_color, (int(image_coords[1]), int(image_coords[0])), 10, 255, -1)
+                        cv2.circle(image_depth, (int(depth_coords[1]), int(depth_coords[0])), 5, 255, -1)
 
-        #cv2.imshow("image depth", image_depth)
-        #cv2.imshow("image color", image_color)
+        cv2.imshow("image depth", image_depth)
+        cv2.imshow("image color", image_color)
         cv2.waitKey(1)
 
         #capture image and publish to image saver node where all images are saved.  #author: Manigandan Sivalingam
