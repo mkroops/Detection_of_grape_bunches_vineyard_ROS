@@ -17,24 +17,24 @@ It stores recording in bagfile folder and images in images folder.
 
 How to execute
 - 1.create workspace and execute commands in terminal
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/
-catkin_make
+- mkdir -p ~/catkin_ws/src
+- cd ~/catkin_ws/
+- catkin_make
 
 - 2.Insert robot_programming_project in src folder
 
 - 3.update .bashrc file and source the package.
 cd ~
-vi .bashrc
-source ~/catkin_ws/devel/setup.bash
-catkin_make
+- vi .bashrc
+- source ~/catkin_ws/devel/setup.bash
+- catkin_make
 
 - 4.To avoid unwanted logs inbetween folow the command below
-roslaunch bacchus_gazebo vineyard_demo.launch world_name:=vineyard_small
-roslaunch robot_programming_project grape_bunch_counter.launch
+- roslaunch bacchus_gazebo vineyard_demo.launch world_name:=vineyard_small
+- roslaunch robot_programming_project grape_bunch_counter.launch
 
 or
 - To execute in a single line follow the below command
-roslaunch robot_programming_project grape_bunch_counter_with_bacchus_gazebo.launch
+- roslaunch robot_programming_project grape_bunch_counter_with_bacchus_gazebo.launch
 
 
