@@ -5,8 +5,8 @@ it has 7 nodes. where main node follow state machine to execute the tasks proper
 
 The following state machine are
 
-START = 0 #start 
-MOVE_TO_WAY_POINT = 1 #move to all waypoints which is mentioned below
+-START = 0 #start 
+-MOVE_TO_WAY_POINT = 1 #move to all waypoints which is mentioned below
 TAKE_IMAGE = 2 #take image
 IMAGE_TAKEN = 3 #update imgae has taken
 ROTATE_TO_VINEYARD = 4 #rotate to vineyard
