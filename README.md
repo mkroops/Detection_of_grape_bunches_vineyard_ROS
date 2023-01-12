@@ -21,7 +21,7 @@ mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/
 catkin_make
 
-- 2. Insert robot_programming_project in src folder
+- 2.Insert robot_programming_project in src folder
 
 - 3.update .bashrc file and source the package.
 cd ~
@@ -29,7 +29,7 @@ vi .bashrc
 source ~/catkin_ws/devel/setup.bash
 catkin_make
 
-- 4. To avoid unwanted logs inbetween folow the command below
+- 4.To avoid unwanted logs inbetween folow the command below
 roslaunch bacchus_gazebo vineyard_demo.launch world_name:=vineyard_small
 roslaunch robot_programming_project grape_bunch_counter.launch
 
