@@ -16,7 +16,7 @@ The following state machine are
 It stores recording in bagfile folder and images in images folder.
 
 How to execute
-1.create workspace and execute commands in terminal
+- 1.create workspace and execute commands in terminal
 - mkdir -p ~/catkin_ws/src
 - cd ~/catkin_ws/
 - catkin_make
