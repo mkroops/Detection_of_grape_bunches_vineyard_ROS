@@ -28,6 +28,7 @@ How to execute
 - vi .bashrc
 - source ~/catkin_ws/devel/setup.bash
 - catkin_make
+- .
 
 - 4.To avoid unwanted logs inbetween folow the command below
 - roslaunch bacchus_gazebo vineyard_demo.launch world_name:=vineyard_small
